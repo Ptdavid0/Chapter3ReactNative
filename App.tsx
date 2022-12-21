@@ -1,11 +1,13 @@
-import { Text, View } from "react-native";
+import { StatusBar } from "react-native";
+import { NativeBaseProvider } from "native-base";
+import { THEME } from "./src/theme";
 import {
   useFonts,
   Roboto_400Regular,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
-
-// import { Container } from './styles';
+import Loading from "@components/Loading";
+import SignIn from "@screens/SignIn";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -13,14 +15,15 @@ const App: React.FC = () => {
     Roboto_700Bold,
   });
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
-    <View>
-      <Text>Hello World</Text>
-    </View>
+    <NativeBaseProvider theme={THEME}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      {fontsLoaded ? <SignIn /> : <Loading />}
+    </NativeBaseProvider>
   );
 };
 
