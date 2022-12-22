@@ -21,3 +21,4 @@ React Navigation
 Command: npm install @react-navigation/native
 Command: expo install react-native-screens react-native-safe-area-context 
 Command: npm install @react-navigation/native-stack
+Command: npm install @react-navigation/bottom-tabs
