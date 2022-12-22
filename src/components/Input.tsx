@@ -1,7 +1,7 @@
 import React from "react";
 import { Input as NativeBaseInput, IInputProps } from "native-base";
 
-const input: React.FC<IInputProps> = ({ ...rest }) => {
+const Input: React.FC<IInputProps> = ({ ...rest }) => {
   return (
     <NativeBaseInput
       bg="gray.700"
@@ -23,4 +23,4 @@ const input: React.FC<IInputProps> = ({ ...rest }) => {
   );
 };
 
-export default input;
+export default Input;

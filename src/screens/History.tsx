@@ -19,6 +19,7 @@ const History: React.FC = () => {
         renderItem={({ item }) => <HistoryCard />}
         keyExtractor={(item, index) => item + index}
         stickySectionHeadersEnabled={false}
+        showsVerticalScrollIndicator={false}
         renderSectionHeader={({ section: { title } }) => (
           <Heading color="gray.200" fontSize="md" mt={10} mb={3}>
             {title}
