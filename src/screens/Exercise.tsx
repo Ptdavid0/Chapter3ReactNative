@@ -1,4 +1,13 @@
-import { Box, Heading, HStack, Icon, Image, Text, VStack } from "native-base";
+import {
+  Box,
+  Heading,
+  HStack,
+  Icon,
+  Image,
+  Text,
+  VStack,
+  ScrollView,
+} from "native-base";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -51,43 +60,44 @@ const Exercise: React.FC = () => {
           </HStack>
         </HStack>
       </VStack>
+      <ScrollView>
+        <VStack p={8}>
+          <Image
+            alt="Exercicio"
+            source={{
+              uri: "https://www.feitodeiridium.com.br/wp-content/uploads/2016/07/remada-unilateral-2.jpg",
+            }}
+            w={"full"}
+            h={80}
+            mb={3}
+            rounded="lg"
+            resizeMode="cover"
+          />
 
-      <VStack p={8}>
-        <Image
-          alt="Exercicio"
-          source={{
-            uri: "https://www.feitodeiridium.com.br/wp-content/uploads/2016/07/remada-unilateral-2.jpg",
-          }}
-          w={"full"}
-          h={80}
-          mb={3}
-          rounded="lg"
-          resizeMode="cover"
-        />
-
-        <Box bg="gray.600" rounded="md" pb={4} px={4}>
-          <HStack
-            alignItems="center"
-            justifyContent="space-around"
-            mb={6}
-            mt={5}
-          >
-            <HStack>
-              <SeriesSvg />
-              <Text color="gray.200" ml={2}>
-                3 séries
-              </Text>
+          <Box bg="gray.600" rounded="md" pb={4} px={4}>
+            <HStack
+              alignItems="center"
+              justifyContent="space-around"
+              mb={6}
+              mt={5}
+            >
+              <HStack>
+                <SeriesSvg />
+                <Text color="gray.200" ml={2}>
+                  3 séries
+                </Text>
+              </HStack>
+              <HStack>
+                <RepsSvg />
+                <Text color="gray.200" ml={2}>
+                  12 repetições
+                </Text>
+              </HStack>
             </HStack>
-            <HStack>
-              <RepsSvg />
-              <Text color="gray.200" ml={2}>
-                12 repetições
-              </Text>
-            </HStack>
-          </HStack>
-          <Button title="Marcar como realizado" />
-        </Box>
-      </VStack>
+            <Button title="Marcar como realizado" />
+          </Box>
+        </VStack>
+      </ScrollView>
     </VStack>
   );
 };
