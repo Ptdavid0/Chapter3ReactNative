@@ -1,0 +1,18 @@
+Babel configuration
+Command: npm install --save-dev babel-plugin-module-resolver
+URL: https://www.npmjs.com/package/babel-plugin-module-resolver
+
+Google Fonts
+Command: expo install expo-font @expo-google-fonts/roboto      
+UR: https://docs.expo.io/guides/using-custom-fonts/
+
+Native Base UI
+Command: npm install native-base
+Command: expo install react-native-svg@12.1.1
+Command: expo install react-native-safe-area-context@3.3.2
+URL: https://docs.nativebase.io/install-expo
+
+SVG transformer
+Command: npm install --save-dev react-native-svg-transformer
+URL: https://github.com/kristerkari/react-native-svg-transformer
+(Remember to create/config the new file metro.config.js + add svg to @types)
