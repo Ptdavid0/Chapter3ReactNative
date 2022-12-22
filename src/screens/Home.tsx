@@ -3,6 +3,8 @@ import HomeHeader from "@components/HomeHeader";
 import { FlatList, Heading, HStack, Text, VStack } from "native-base";
 import React from "react";
 import Group from "../components/Group";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "@routes/app.routes";
 
 const Home: React.FC = () => {
   const [activeGroup, setActiveGroup] = React.useState("costas");
@@ -13,9 +15,14 @@ const Home: React.FC = () => {
     "Remada baixa",
     "Remada alta",
   ]);
+  const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
   const isCurrentActiveGroup = (name: string) =>
     activeGroup.toLocaleUpperCase() === name.toLocaleUpperCase();
+
+  const handleOpenExerciseDetails = () => {
+    navigate("Exercise");
+  };
 
   return (
     <VStack flex={1}>
@@ -48,7 +55,9 @@ const Home: React.FC = () => {
 
         <FlatList
           data={exercises}
-          renderItem={({ item }) => <ExerciseCard name={item} />}
+          renderItem={({ item }) => (
+            <ExerciseCard name={item} onPress={handleOpenExerciseDetails} />
+          )}
           keyExtractor={(item) => item}
           showsVerticalScrollIndicator={false}
           _contentContainerStyle={{ paddingBottom: 20 }}
