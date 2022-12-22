@@ -4,13 +4,21 @@ import Input from "@components/Input";
 import BackgroundImg from "@assets/background.png";
 import LogoSvg from "@assets/logo.svg";
 import Button from "@components/Button";
+import { useNavigation } from "@react-navigation/native";
 
 const SignUp: React.FC = () => {
+  const { goBack } = useNavigation();
+
+  const handleGoBack = () => {
+    goBack();
+  };
+
   return (
-    <VStack flex={1} bg="gray.700" px={10} pb={16}>
+    <VStack flex={1} px={10} pb={16}>
       <Image
         source={BackgroundImg}
         alt="Pessoas treinando"
+        defaultSource={BackgroundImg}
         resizeMode="center"
         position="absolute"
       />
@@ -42,7 +50,12 @@ const SignUp: React.FC = () => {
       </Center>
 
       <Center mt={8}>
-        <Button title="Voltar para o login" variant={"outline"} mt={24} />
+        <Button
+          title="Voltar para o login"
+          variant={"outline"}
+          mt={24}
+          onPress={handleGoBack}
+        />
       </Center>
     </VStack>
   );

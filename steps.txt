@@ -16,3 +16,9 @@ SVG transformer
 Command: npm install --save-dev react-native-svg-transformer
 URL: https://github.com/kristerkari/react-native-svg-transformer
 (Remember to create/config the new file metro.config.js + add svg to @types)
+
+React Navigation 
+Command: npm install @react-navigation/native
+Command: expo install react-native-screens react-native-safe-area-context 
+Command: npm install @react-navigation/native-stack
+Command: npm install @react-navigation/bottom-tabs
