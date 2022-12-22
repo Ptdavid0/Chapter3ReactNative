@@ -29,7 +29,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 const AppRoutes: React.FC = () => {
   const { colors, sizes } = useTheme();
 
-  const iconSize = sizes[8];
+  const iconSize = sizes[6];
   return (
     <Navigator
       initialRouteName="Home"
