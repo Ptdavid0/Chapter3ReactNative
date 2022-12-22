@@ -11,3 +11,8 @@ Command: npm install native-base
 Command: expo install react-native-svg@12.1.1
 Command: expo install react-native-safe-area-context@3.3.2
 URL: https://docs.nativebase.io/install-expo
+
+SVG transformer
+Command: npm install --save-dev react-native-svg-transformer
+URL: https://github.com/kristerkari/react-native-svg-transformer
+(Remember to create/config the new file metro.config.js + add svg to @types)

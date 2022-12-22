@@ -5,7 +5,7 @@ import BackgroundImg from "@assets/background.png";
 import LogoSvg from "@assets/logo.svg";
 import Button from "@components/Button";
 
-const SignIn: React.FC = () => {
+const SignUp: React.FC = () => {
   return (
     <VStack flex={1} bg="gray.700" px={10} pb={16}>
       <Image
@@ -24,7 +24,7 @@ const SignIn: React.FC = () => {
 
       <Center>
         <Heading color="gray.100" fontSize="xl" fontFamily="body" mb={6}>
-          Acesse sua conta
+          Crie sua conta
         </Heading>
 
         <Input
@@ -34,24 +34,18 @@ const SignIn: React.FC = () => {
           autoCapitalize="none"
         />
 
+        <Input placeholder="Name" />
+
         <Input placeholder="Senha" type="password" secureTextEntry />
 
-        <Button title="Acessar" />
+        <Button title="Criar e acessar" />
       </Center>
 
-      <Text
-        color="gray.100"
-        fontSize="sm"
-        textAlign="center"
-        mt={32}
-        mb={3}
-        fontFamily="body"
-      >
-        Ainda não tem tem acesso ?{" "}
-      </Text>
-      <Button title="Criar conta" variant={"outline"} />
+      <Center mt={8}>
+        <Button title="Voltar para o login" variant={"outline"} mt={24} />
+      </Center>
     </VStack>
   );
 };
 
-export default SignIn;
+export default SignUp;

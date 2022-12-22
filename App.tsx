@@ -7,7 +7,7 @@ import {
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
 import Loading from "@components/Loading";
-import SignIn from "@screens/SignIn";
+import SignUp from "@screens/SignUp";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -22,7 +22,7 @@ const App: React.FC = () => {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <SignIn /> : <Loading />}
+      {fontsLoaded ? <SignUp /> : <Loading />}
     </NativeBaseProvider>
   );
 };
