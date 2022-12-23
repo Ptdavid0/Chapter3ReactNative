@@ -31,7 +31,12 @@ const ExerciseCard: React.FC<Props> = ({ name, ...rest }) => {
         />
         <VStack flex={1}>
           <HStack flex={1} flexDirection="column">
-            <Heading color="white" fontSize="lg" fontWeight="bold">
+            <Heading
+              color="white"
+              fontSize="lg"
+              fontWeight="bold"
+              fontFamily="heading"
+            >
               {name}
             </Heading>
             <Text color="gray.200" fontSize="sm" mt={1} numberOfLines={2}>

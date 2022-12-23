@@ -8,7 +8,7 @@ type Props = {
 const ScreenHeader: React.FC<Props> = ({ title }) => {
   return (
     <Center bg="gray.600" pb={8} pt={16}>
-      <Heading color="gray.100" fontSize="xl" pt={2}>
+      <Heading color="gray.100" fontSize="xl" pt={2} fontFamily="heading">
         {title}
       </Heading>
     </Center>
