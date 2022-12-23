@@ -22,3 +22,12 @@ Command: npm install @react-navigation/native
 Command: expo install react-native-screens react-native-safe-area-context 
 Command: npm install @react-navigation/native-stack
 Command: npm install @react-navigation/bottom-tabs
+
+Expo Image Picker
+Command: npx expo install expo-image-picker
+URL: https://docs.expo.dev/versions/latest/sdk/imagepicker/
+(lembrar de adicionar as configs no app.json)
+
+Expo File System
+Command: npx expo install expo-file-system
+URL: https://docs.expo.dev/versions/v47.0.0/sdk/filesystem/
