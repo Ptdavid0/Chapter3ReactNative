@@ -18,7 +18,7 @@ const HomeHeader: React.FC = () => {
         <Text color="gray.100" fontSize="md">
           Ola,
         </Text>
-        <Heading color="gray.100" fontSize="md">
+        <Heading color="gray.100" fontSize="md" fontFamily="heading">
           Pedro
         </Heading>
       </VStack>

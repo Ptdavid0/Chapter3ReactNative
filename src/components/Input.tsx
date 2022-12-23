@@ -40,7 +40,13 @@ const Input: React.FC<Props> = ({
         }}
         {...rest}
       />
-      <FormControl.ErrorMessage>{errorMessages}</FormControl.ErrorMessage>
+      <FormControl.ErrorMessage
+        _text={{
+          color: "red.500",
+        }}
+      >
+        {errorMessages}
+      </FormControl.ErrorMessage>
     </FormControl>
   );
 };

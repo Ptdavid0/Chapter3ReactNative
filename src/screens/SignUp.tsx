@@ -16,7 +16,7 @@ type FormData = {
   password_confirmation: string;
 };
 
-const signUpSchema = yup.object().shape({
+const signUpSchema = yup.object({
   email: yup.string().required("E-mail obrigatório").email("E-mail inválido"),
   name: yup.string().required("Nome obrigatório"),
   password: yup
@@ -72,7 +72,7 @@ const SignUp: React.FC = () => {
         </Center>
 
         <Center>
-          <Heading color="gray.100" fontSize="xl" fontFamily="body" mb={6}>
+          <Heading color="gray.100" fontSize="xl" fontFamily="heading" mb={6}>
             Crie sua conta
           </Heading>
 
@@ -147,7 +147,7 @@ const SignUp: React.FC = () => {
           <Button
             title="Voltar para o login"
             variant={"outline"}
-            mt={20}
+            mt={12}
             onPress={handleGoBack}
           />
         </Center>

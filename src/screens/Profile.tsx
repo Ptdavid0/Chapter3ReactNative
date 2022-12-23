@@ -112,6 +112,7 @@ const Profile: React.FC = () => {
             mb={4}
             alignSelf="flex-start"
             mt={6}
+            fontFamily="heading"
           >
             Alterar senha
           </Heading>
