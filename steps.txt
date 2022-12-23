@@ -31,3 +31,8 @@ URL: https://docs.expo.dev/versions/latest/sdk/imagepicker/
 Expo File System
 Command: npx expo install expo-file-system
 URL: https://docs.expo.dev/versions/v47.0.0/sdk/filesystem/
+
+React Hook Form + Yup
+Command: npm install react-hook-form
+Command: npm install @hookform/resolvers yup
+URL: https://react-hook-form.com/get-started/

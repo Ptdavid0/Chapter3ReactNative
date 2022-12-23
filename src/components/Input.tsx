@@ -1,25 +1,47 @@
 import React from "react";
-import { Input as NativeBaseInput, IInputProps } from "native-base";
+import {
+  Input as NativeBaseInput,
+  IInputProps,
+  FormControl,
+} from "native-base";
 
-const Input: React.FC<IInputProps> = ({ ...rest }) => {
+type Props = IInputProps & {
+  errorMessages?: string | null;
+};
+
+const Input: React.FC<Props> = ({
+  errorMessages = null,
+  isInvalid,
+  ...rest
+}) => {
+  const invalid = !!errorMessages || isInvalid;
+
   return (
-    <NativeBaseInput
-      bg="gray.700"
-      h={14}
-      px={4}
-      borderWidth={0}
-      fontSize="md"
-      color="white"
-      fontFamily="body"
-      mb={4}
-      placeholderTextColor="gray.300"
-      _focus={{
-        borderWidth: 1,
-        borderColor: "green.500",
-        bg: "gray.700",
-      }}
-      {...rest}
-    />
+    <FormControl isInvalid={invalid} mb={4}>
+      <NativeBaseInput
+        bg="gray.700"
+        h={14}
+        px={4}
+        borderWidth={0}
+        fontSize="md"
+        color="white"
+        fontFamily="body"
+        placeholderTextColor="gray.300"
+        isInvalid={invalid}
+        _invalid={{
+          borderWidth: 1,
+          borderColor: "red.500",
+          bg: "gray.700",
+        }}
+        _focus={{
+          borderWidth: 1,
+          borderColor: "green.500",
+          bg: "gray.700",
+        }}
+        {...rest}
+      />
+      <FormControl.ErrorMessage>{errorMessages}</FormControl.ErrorMessage>
+    </FormControl>
   );
 };
 
