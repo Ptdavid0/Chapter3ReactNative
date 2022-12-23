@@ -7,11 +7,14 @@ import {
   Skeleton,
   Text,
   VStack,
+  useToast,
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import React from "react";
 import Input from "@components/Input";
 import Button from "@components/Button";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 const PHOTO_SIZE = 33;
 
@@ -20,6 +23,44 @@ const Profile: React.FC = () => {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [userPhoto, setUserPhoto] = React.useState(
+    "https://github.com/ptdavid0.png"
+  );
+
+  const toast = useToast();
+
+  const handlePickImage = async () => {
+    setPhotoIsLoading(true);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 4],
+        quality: 1,
+      });
+
+      if (result.canceled) return;
+
+      if (result.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return toast.show({
+            title: "Erro ao alterar foto",
+            description: "A foto deve ter no máximo 5MB",
+            duration: 5000,
+            placement: "top",
+            bgColor: "red.500",
+          });
+        }
+        setUserPhoto(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setPhotoIsLoading(false);
+    }
+  };
 
   return (
     <VStack flex={1}>
@@ -42,12 +83,12 @@ const Profile: React.FC = () => {
           ) : (
             <UserPhoto
               source={{
-                uri: "https://github.com/ptdavid0.png",
+                uri: userPhoto,
               }}
               size={PHOTO_SIZE}
             />
           )}
-          <TouchableOpacity onPress={() => setPhotoIsLoading(!photoIsLoading)}>
+          <TouchableOpacity onPress={handlePickImage}>
             <Text
               color="green.500"
               fontSize="md"
