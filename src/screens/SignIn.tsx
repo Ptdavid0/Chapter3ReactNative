@@ -1,5 +1,5 @@
 import React from "react";
-import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+import { VStack, Image, Text, Center, Heading } from "native-base";
 import Input from "@components/Input";
 import BackgroundImg from "@assets/background.png";
 import LogoSvg from "@assets/logo.svg";
