@@ -8,6 +8,7 @@ import {
 } from "@expo-google-fonts/roboto";
 import Loading from "@components/Loading";
 import Routes from "@routes/index";
+import AuthContextProvider from "@contexts/AuthContext";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -22,7 +23,9 @@ const App: React.FC = () => {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <Routes /> : <Loading />}
+      <AuthContextProvider>
+        {fontsLoaded ? <Routes /> : <Loading />}
+      </AuthContextProvider>
     </NativeBaseProvider>
   );
 };
