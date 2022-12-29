@@ -1,5 +1,5 @@
 import React from "react";
-import { VStack, Image, Text, Center, Heading } from "native-base";
+import { VStack, Image, Text, Center, Heading, useToast } from "native-base";
 import Input from "@components/Input";
 import BackgroundImg from "@assets/background.png";
 import LogoSvg from "@assets/logo.svg";
@@ -7,6 +7,9 @@ import Button from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { Controller, useForm } from "react-hook-form";
+import { useAuth } from "@hooks/useAuth";
+import { AppError } from "@utils/AppError";
+import { Alert } from "react-native";
 
 type FormData = {
   email: string;
@@ -15,10 +18,14 @@ type FormData = {
 
 const SignIn: React.FC = () => {
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleNewAccount = () => {
     navigate("SignUp");
   };
+
+  const { signIn } = useAuth();
+  const toast = useToast();
 
   const {
     control,
@@ -26,8 +33,21 @@ const SignIn: React.FC = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const handleSignIn = ({ email, password }: FormData) => {
-    console.log(email, password);
+  const handleSignIn = async ({ email, password }: FormData) => {
+    try {
+      setIsLoading(true);
+      await signIn(email, password);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : "Erro na autenticação";
+      setIsLoading(false);
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
   };
 
   return (
@@ -86,7 +106,11 @@ const SignIn: React.FC = () => {
           defaultValue=""
         />
 
-        <Button title="Entrar" onPress={handleSubmit(handleSignIn)} />
+        <Button
+          title="Entrar"
+          onPress={handleSubmit(handleSignIn)}
+          isLoading={isLoading}
+        />
       </Center>
 
       <Text

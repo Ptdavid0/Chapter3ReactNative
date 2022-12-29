@@ -18,9 +18,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.data) {
-      return Promise.reject(
-        new AppError(error.response.data.message, error.response.status)
-      );
+      return Promise.reject(new AppError(error.response.data.message));
     }
     return Promise.reject(error);
   }

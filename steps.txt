@@ -36,3 +36,10 @@ React Hook Form + Yup
 Command: npm install react-hook-form
 Command: npm install @hookform/resolvers yup
 URL: https://react-hook-form.com/get-started/
+
+Axios 
+Command: npm install axios
+URL: https://www.npmjs.com/package/axios
+
+Expo Async Storage
+Command: expo install @react-native-async-storage/async-storage
