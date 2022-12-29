@@ -18,6 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { api } from "../service/api";
 import { AppError } from "@utils/AppError";
+import { useAuth } from "@hooks/useAuth";
 
 type FormData = {
   email: string;
@@ -42,6 +43,8 @@ const signUpSchema = yup.object({
 const SignUp: React.FC = () => {
   const { goBack } = useNavigation();
   const toast = useToast();
+  const { signIn } = useAuth();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const {
     control,
@@ -63,13 +66,15 @@ const SignUp: React.FC = () => {
 
   const handleSignUp = async ({ email, name, password }: FormData) => {
     try {
-      const response = await api.post("/users", {
+      setIsLoading(true);
+      await api.post("/users", {
         email,
         name,
         password,
       });
-      console.log(response.data);
+      await signIn(email, password);
     } catch (error) {
+      setIsLoading(false);
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
@@ -168,6 +173,7 @@ const SignUp: React.FC = () => {
           <Button
             title="Criar e acessar"
             onPress={handleSubmit(handleSignUp)}
+            isLoading={isLoading}
           />
         </Center>
 
