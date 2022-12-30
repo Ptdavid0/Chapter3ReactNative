@@ -1,23 +1,55 @@
 import HistoryCard from "@components/HistoryCard";
 import ScreenHeader from "@components/ScreenHeader";
-import { SectionList, VStack, Text, Heading } from "native-base";
+import { AppError } from "@utils/AppError";
+import { SectionList, VStack, Text, Heading, useToast } from "native-base";
 import React from "react";
+import { api } from "../service/api";
+import { useFocusEffect } from "@react-navigation/native";
+import Loading from "@components/Loading";
+import { HistoryByDayDTO } from "@dtos/HistoryByDayDTO";
 
 const History: React.FC = () => {
-  const [exercises, setExercises] = React.useState([
-    { title: "2021-08-01", data: ["Remada", "Puxada"] },
-    { title: "2021-08-01", data: ["Remada", "Puxada"] },
-    { title: "2021-08-02", data: ["Remada", "Puxada"] },
-    { title: "2021-08-02", data: ["Remada", "Puxada"] },
-  ]);
+  const [exercises, setExercises] = React.useState<HistoryByDayDTO[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const toast = useToast();
+
+  const fetchHistory = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await api.get(`/history`);
+      setExercises(data);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível carregar o histórico de exercícios";
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchHistory();
+    }, [])
+  );
+
+  if (isLoading || !exercises) {
+    return <Loading />;
+  }
 
   return (
     <VStack flex={1}>
       <ScreenHeader title="Histórico de Exercícios" />
       <SectionList
         sections={exercises}
-        renderItem={({ item }) => <HistoryCard />}
-        keyExtractor={(item, index) => item + index}
+        renderItem={({ item }) => <HistoryCard data={item} />}
+        keyExtractor={(item) => item.id}
         stickySectionHeadersEnabled={false}
         showsVerticalScrollIndicator={false}
         renderSectionHeader={({ section: { title } }) => (
