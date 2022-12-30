@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
   ScrollView,
+  useToast,
 } from "native-base";
 import React from "react";
 import { TouchableOpacity } from "react-native";
@@ -17,13 +18,75 @@ import BodySvg from "@assets/body.svg";
 import SeriesSvg from "@assets/series.svg";
 import RepsSvg from "@assets/repetitions.svg";
 import Button from "@components/Button";
+import { useRoute } from "@react-navigation/native";
+import { api } from "../service/api";
+import { AppError } from "@utils/AppError";
+import { ExerciseDTO } from "@dtos/ExerciseDTO";
+import Loading from "@components/Loading";
+
+type RouteParamsProps = {
+  exerciseId: string;
+};
 
 const Exercise: React.FC = () => {
   const { goBack } = useNavigation<AppNavigatorRoutesProps>();
 
+  const [exercise, setExercise] = React.useState<ExerciseDTO>(
+    {} as ExerciseDTO
+  );
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  const toast = useToast();
+  const route = useRoute();
+
+  const { exerciseId } = route.params as RouteParamsProps;
+
+  const fetchExerciseDetails = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await api.get(`/exercises/${exerciseId}`);
+      setExercise(data);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível carregar os exercícios";
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchExerciseDetails();
+  }, [exerciseId]);
+
   const handleGoBack = () => {
     goBack();
   };
+
+  if (isLoading || !exercise) {
+    return (
+      <VStack flex={1}>
+        <TouchableOpacity onPress={handleGoBack}>
+          <Icon
+            as={Feather}
+            name="arrow-left"
+            color="green.500"
+            size={6}
+            mt={16}
+            ml={8}
+          />
+        </TouchableOpacity>
+        <Loading />
+      </VStack>
+    );
+  }
+
   return (
     <VStack flex={1}>
       <VStack pt={12} bg="gray.600" px={8}>
@@ -49,7 +112,7 @@ const Exercise: React.FC = () => {
             flexShrink={1}
             fontFamily="heading"
           >
-            Remada unilateral
+            {exercise.name}
           </Heading>
 
           <HStack alignItems="center">
@@ -60,24 +123,26 @@ const Exercise: React.FC = () => {
               textTransform="capitalize"
               ml={1}
             >
-              Costas
+              {exercise.group}
             </Text>
           </HStack>
         </HStack>
       </VStack>
       <ScrollView>
         <VStack p={8}>
-          <Image
-            alt="Exercicio"
-            source={{
-              uri: "https://www.feitodeiridium.com.br/wp-content/uploads/2016/07/remada-unilateral-2.jpg",
-            }}
-            w={"full"}
-            h={80}
-            mb={3}
-            rounded="lg"
-            resizeMode="cover"
-          />
+          <Box rounded="lg" mb={3} overflow="hidden">
+            <Image
+              alt="Exercicio"
+              source={{
+                uri: `${api.defaults.baseURL}/exercise/demo/${exercise.demo}`,
+              }}
+              w={"full"}
+              h={80}
+              mb={3}
+              rounded="lg"
+              resizeMode="cover"
+            />
+          </Box>
 
           <Box bg="gray.600" rounded="md" pb={4} px={4}>
             <HStack
@@ -89,13 +154,13 @@ const Exercise: React.FC = () => {
               <HStack>
                 <SeriesSvg />
                 <Text color="gray.200" ml={2}>
-                  3 séries
+                  {exercise.series} séries
                 </Text>
               </HStack>
               <HStack>
                 <RepsSvg />
                 <Text color="gray.200" ml={2}>
-                  12 repetições
+                  {exercise.repetitions} repetições
                 </Text>
               </HStack>
             </HStack>
