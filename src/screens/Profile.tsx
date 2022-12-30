@@ -10,24 +10,99 @@ import {
   useToast,
 } from "native-base";
 import { TouchableOpacity } from "react-native";
+import { Controller, useForm } from "react-hook-form";
 import React from "react";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import { useAuth } from "@hooks/useAuth";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { api } from "../service/api";
+import { AppError } from "@utils/AppError";
 
 const PHOTO_SIZE = 33;
 
+type FormData = {
+  name: string;
+  email: string;
+  password: string;
+  confirm_password: string;
+  old_password: string;
+};
+
+const schema = Yup.object().shape({
+  name: Yup.string().required("Nome obrigatório"),
+  password: Yup.string()
+    .min(6, "No mínimo 6 caracteres")
+    .nullable()
+    .transform((value) => (!!value ? value : null)),
+  confirm_password: Yup.string()
+    .nullable()
+    .transform((value) => (!!value ? value : null))
+    .oneOf([Yup.ref("password"), null], "As senhas devem ser iguais")
+    .when("password", {
+      is: (Field: any) => Field,
+      then: Yup.string()
+        .nullable()
+        .transform((value) => (!!value ? value : null))
+        .required("Confirmação de senha obrigatória"),
+    }),
+});
+
 const Profile: React.FC = () => {
+  const [isUpdating, setIsUpdating] = React.useState(false);
   const [photoIsLoading, setPhotoIsLoading] = React.useState(false);
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
   const [userPhoto, setUserPhoto] = React.useState(
     "https://github.com/ptdavid0.png"
   );
-
   const toast = useToast();
+  const { user, updateUserProfile } = useAuth();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      name: user?.name,
+      email: user?.email,
+    },
+    resolver: yupResolver(schema),
+  });
+
+  const handleProfileUpdate = async (data: FormData) => {
+    try {
+      setIsUpdating(true);
+
+      const userUpdated = user;
+
+      userUpdated.name = data.name;
+
+      await api.put("/users", data);
+
+      await updateUserProfile(userUpdated);
+
+      toast.show({
+        title: "Perfil atualizado",
+        placement: "top",
+        bgColor: "green.500",
+      });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível atualizar o perfil, tente novamente mais tarde";
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const handlePickImage = async () => {
     setPhotoIsLoading(true);
@@ -56,7 +131,13 @@ const Profile: React.FC = () => {
         setUserPhoto(result.assets[0].uri);
       }
     } catch (error) {
-      console.log(error);
+      toast.show({
+        title: "Erro ao alterar foto",
+        description: "Não foi possível alterar a foto de perfil",
+        duration: 5000,
+        placement: "top",
+        bgColor: "red.500",
+      });
     } finally {
       setPhotoIsLoading(false);
     }
@@ -100,8 +181,35 @@ const Profile: React.FC = () => {
             </Text>
           </TouchableOpacity>
 
-          <Input placeholder="Nome" bg={"gray.600"} />
-          <Input placeholder="E-mail" bg={"gray.600"} isDisabled />
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Nome"
+                bg={"gray.600"}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                errorMessages={errors.name?.message}
+              />
+            )}
+            name="name"
+          />
+
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="E-mail"
+                bg={"gray.600"}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                isDisabled
+              />
+            )}
+            name="email"
+          />
         </Center>
 
         <VStack px={10} mb={9}>
@@ -116,22 +224,60 @@ const Profile: React.FC = () => {
           >
             Alterar senha
           </Heading>
-          <Input placeholder="Senha antiga" bg={"gray.600"} secureTextEntry />
-          <Input
-            placeholder="Nova senha"
-            bg={"gray.600"}
-            secureTextEntry
-            onChangeText={setPassword}
-          />
-          {password && (
-            <Input
-              placeholder="Confirme a nova senha"
-              bg={"gray.600"}
-              secureTextEntry
-            />
-          )}
 
-          <Button title="Alterar senha" mt={6} />
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Senha antiga"
+                bg={"gray.600"}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                secureTextEntry
+              />
+            )}
+            name="old_password"
+          />
+
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Nova senha"
+                bg={"gray.600"}
+                secureTextEntry
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+                errorMessages={errors.password?.message}
+              />
+            )}
+            name="password"
+          />
+
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                placeholder="Confirme a nova senha"
+                bg={"gray.600"}
+                secureTextEntry
+                onChangeText={onChange}
+                value={value}
+                onBlur={onBlur}
+                errorMessages={errors.confirm_password?.message}
+              />
+            )}
+            name="confirm_password"
+          />
+
+          <Button
+            title="Atualizar"
+            mt={6}
+            onPress={handleSubmit(handleProfileUpdate)}
+            isLoading={isUpdating}
+          />
         </VStack>
       </ScrollView>
     </VStack>
