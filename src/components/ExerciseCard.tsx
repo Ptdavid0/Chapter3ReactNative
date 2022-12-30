@@ -2,12 +2,15 @@ import { Heading, HStack, Image, Text, VStack, Icon } from "native-base";
 import React from "react";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { Entypo } from "@expo/vector-icons";
+import { ExerciseDTO } from "@dtos/ExerciseDTO";
+import { api } from "../service/api";
 
 type Props = TouchableOpacityProps & {
-  name: string;
+  data: ExerciseDTO;
 };
 
-const ExerciseCard: React.FC<Props> = ({ name, ...rest }) => {
+const ExerciseCard: React.FC<Props> = ({ data, ...rest }) => {
+  const { name, thumb, series, repetitions } = data;
   return (
     <TouchableOpacity {...rest}>
       <HStack
@@ -20,9 +23,7 @@ const ExerciseCard: React.FC<Props> = ({ name, ...rest }) => {
       >
         <Image
           alt="Exercicio"
-          source={{
-            uri: "https://www.feitodeiridium.com.br/wp-content/uploads/2016/07/remada-unilateral-2.jpg",
-          }}
+          source={{ uri: `${api.defaults.baseURL}/exercise/thumb/${thumb}` }}
           w={16}
           h={16}
           rounded="md"
@@ -40,7 +41,7 @@ const ExerciseCard: React.FC<Props> = ({ name, ...rest }) => {
               {name}
             </Heading>
             <Text color="gray.200" fontSize="sm" mt={1} numberOfLines={2}>
-              3 séries x 12 repetições
+              {series} séries x {repetitions} repetições
             </Text>
           </HStack>
         </VStack>
