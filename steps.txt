@@ -43,3 +43,4 @@ URL: https://www.npmjs.com/package/axios
 
 Expo Async Storage
 Command: expo install @react-native-async-storage/async-storage
+URL: https://docs.expo.dev/versions/latest/sdk/async-storage/
