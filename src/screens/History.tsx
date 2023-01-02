@@ -7,11 +7,13 @@ import { api } from "../service/api";
 import { useFocusEffect } from "@react-navigation/native";
 import Loading from "@components/Loading";
 import { HistoryByDayDTO } from "@dtos/HistoryByDayDTO";
+import { useAuth } from "@hooks/useAuth";
 
 const History: React.FC = () => {
   const [exercises, setExercises] = React.useState<HistoryByDayDTO[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const toast = useToast();
+  const { refreshedToken } = useAuth();
 
   const fetchHistory = async () => {
     try {
@@ -36,7 +38,7 @@ const History: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchHistory();
-    }, [])
+    }, [refreshedToken])
   );
 
   if (isLoading || !exercises) {

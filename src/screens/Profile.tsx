@@ -90,6 +90,7 @@ const Profile: React.FC = () => {
         title: "Perfil atualizado",
         placement: "top",
         bgColor: "green.500",
+        duration: 5000,
       });
     } catch (error) {
       const isAppError = error instanceof AppError;
@@ -159,12 +160,6 @@ const Profile: React.FC = () => {
         const userUpdated = user;
         userUpdated.avatar = avatarUpdatedResponse.data.avatar;
         updateUserProfile(userUpdated);
-
-        toast.show({
-          title: "Foto atualizada !",
-          placement: "top",
-          bgColor: "green.500",
-        });
       }
     } catch (error) {
       toast.show({
