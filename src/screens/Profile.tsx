@@ -21,6 +21,7 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { api } from "../service/api";
 import { AppError } from "@utils/AppError";
+import defaultUserPhotoImg from "@assets/userPhotoDefault.png";
 
 const PHOTO_SIZE = 33;
 
@@ -54,9 +55,7 @@ const schema = Yup.object().shape({
 const Profile: React.FC = () => {
   const [isUpdating, setIsUpdating] = React.useState(false);
   const [photoIsLoading, setPhotoIsLoading] = React.useState(false);
-  const [userPhoto, setUserPhoto] = React.useState(
-    "https://github.com/ptdavid0.png"
-  );
+
   const toast = useToast();
   const { user, updateUserProfile } = useAuth();
   const {
@@ -70,6 +69,10 @@ const Profile: React.FC = () => {
     },
     resolver: yupResolver(schema),
   });
+
+  const userPhoto = user.avatar
+    ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+    : defaultUserPhotoImg;
 
   const handleProfileUpdate = async (data: FormData) => {
     try {
@@ -117,7 +120,8 @@ const Profile: React.FC = () => {
       if (result.canceled) return;
 
       if (result.assets[0].uri) {
-        const photoInfo = await FileSystem.getInfoAsync(result.assets[0].uri);
+        const photoSelected = result.assets[0];
+        const photoInfo = await FileSystem.getInfoAsync(photoSelected.uri);
 
         if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
           return toast.show({
@@ -128,7 +132,39 @@ const Profile: React.FC = () => {
             bgColor: "red.500",
           });
         }
-        setUserPhoto(result.assets[0].uri);
+        const fileExtension = photoSelected.uri.split(".").pop();
+        const photoFile = {
+          uri: photoSelected.uri,
+          type: `${photoSelected.type}/${fileExtension}`,
+          name: `${user.name.replaceAll(
+            " ",
+            "_"
+          )}.${fileExtension}`.toLowerCase(),
+        } as any;
+
+        const userPhotoUploadForm = new FormData();
+
+        userPhotoUploadForm.append("avatar", photoFile);
+
+        const avatarUpdatedResponse = await api.patch(
+          "/users/avatar",
+          userPhotoUploadForm,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const userUpdated = user;
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar;
+        updateUserProfile(userUpdated);
+
+        toast.show({
+          title: "Foto atualizada !",
+          placement: "top",
+          bgColor: "green.500",
+        });
       }
     } catch (error) {
       toast.show({
@@ -162,12 +198,7 @@ const Profile: React.FC = () => {
               endColor="gray.400"
             />
           ) : (
-            <UserPhoto
-              source={{
-                uri: userPhoto,
-              }}
-              size={PHOTO_SIZE}
-            />
+            <UserPhoto source={userPhoto} size={PHOTO_SIZE} />
           )}
           <TouchableOpacity onPress={handlePickImage}>
             <Text
